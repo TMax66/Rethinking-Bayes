@@ -67,6 +67,22 @@ x<-brm(data = dt, family = gaussian,
     #           prior(uniform(0, 200), class = sigma)),
     iter = 31000, warmup = 30000, chains = 4, cores = 4)
 
+post<-posterior_samples(x)
+
+post %>%
+  select(b_Intercept, sigma) %>%
+  cor()
+
+post %>%
+  transmute(gruppo = b_Intercept + b_groupTreatment) 
+
+
+
+
+nd <- tibble(group = "Treatment")
+
+fitted(x,
+       newdata = nd)
 
 
 newdt <- read_excel("newdt.xlsx")
