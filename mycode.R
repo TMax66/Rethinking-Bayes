@@ -60,6 +60,7 @@ ggplot(dt, aes(x=group, y=y))+geom_boxplot()
 
 
 library(brms)
+library(tidybayes)
 
 x<-brm(data = dt, family = gaussian,
    y ~ 1+group,
@@ -67,14 +68,15 @@ x<-brm(data = dt, family = gaussian,
     #           prior(uniform(0, 200), class = sigma)),
     iter = 31000, warmup = 30000, chains = 4, cores = 4)
 
+posterior_summary(x)
+
 post<-posterior_samples(x)
 
-post %>%
-  select(b_Intercept, sigma) %>%
-  cor()
 
-post %>%
-  transmute(gruppo = b_Intercept + b_groupTreatment) 
+
+m_Treatment<-post %>%
+  transmute(gruppo = b_Intercept + b_groupTreatment) %>% 
+  mean_qi(.width = .95)
 
 
 
