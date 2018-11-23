@@ -1,0 +1,18 @@
+RETHINKING FUNZIONI
+
+dens() <- serve a plottare le distribuzioni a posteriori dopo che sono state campionate con sample ----
+
+PI()<-calcola l'intervallo in cui ricade una determinata % di valori della distribuzione a posteriori
+
+HPDI()<- calcola l'intervallo che cattura i valori del parametro con la più alta probabilità a posteriori
+
+chainmode()<- calcola la moda della distribuzione a posteriori sampled ( la massima stima a posteriori)
+
+simplehist() <- serve a plottare un istogramma della distruibuzioni dei campioni simulati (posterior predictive distribution)
+
+
+precis()<-restituisce i risultati di un modello fittato con la funzione map() o map2stan()
+
+vcov()<-restituisce la matrice di varianza-covarianza tra i parametri stimati con un modello map()
+
+extract.samples()<-campiona la distribuzione a posteriori ottenuta con map()
