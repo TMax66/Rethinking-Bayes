@@ -67,3 +67,47 @@ vcov(fit)
 
 post<-extract.samples(fit)
 precis(post)
+
+
+##########################
+##########################
+##MULTILEVEL MODEL CH.12####
+
+library(rethinking)
+data("reedfrogs")
+d<-reedfrogs
+str(d)
+
+d$tank<-1:nrow(d)
+
+m12.1<-map2stan(
+  alist(
+    surv~dbinom(density,p),
+    logit(p)<-a_tank[tank],
+    a_tank[tank]~dnorm(0,5)
+  ),
+  data=d
+)
+
+##multilevel model###
+m12.2<-map2stan(
+  alist(
+    surv~dbinom(density,p),
+    logit(p)<-a_tank[tank],
+    a_tank[tank]~dnorm(a,sigma),
+    a~dnorm(0,1),
+    sigma~dcauchy(0,1)
+  ),
+  data=d, iter=4000,chains = 4
+)
+
+library(ggplot2)
+library(rstan)
+library(reshape2)
+library(dplyr)
+
+
+data(psid, package="faraway")
+d<-psid
+psid20 <- filter(psid, person <= 20)
+ggplot(psid20, aes(x=year, y=income))+geom_line()+facet_wrap(~ person)
