@@ -16,3 +16,6 @@ precis()<-restituisce i risultati di un modello fittato con la funzione map() o 
 vcov()<-restituisce la matrice di varianza-covarianza tra i parametri stimati con un modello map()
 
 extract.samples()<-campiona la distribuzione a posteriori ottenuta con map()
+
+
+link() <- questa funzione campiona dalla distribuzione a post e poi calcola mu come funzione lineare di a beta e tutti i valori di X in caso di modello tipo: mu=a+b*X !!!

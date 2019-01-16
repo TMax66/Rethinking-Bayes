@@ -37,10 +37,10 @@ d<-Howell1
 d2<-d[d$age >=18,]
 d2$height 
 #####modello###
-# h~Normal(mu, sigma)
+#   h~Normal(mu, sigma)
 #prior: 
-# mu~Normal(178,20)
-# sigma~Uniform(0, 50)
+#            mu~Normal(178,20)
+#            sigma~Uniform(0, 50)
 
 ##studiare la prior scelta#####
 curve(dnorm(x, 178, 20), from=100, to=250)#distribuzione della prior per mu###
@@ -68,6 +68,7 @@ vcov(fit)
 post<-extract.samples(fit)
 precis(post)
 
+<<<<<<< HEAD
 
 ##########################
 ##########################
@@ -111,3 +112,54 @@ data(psid, package="faraway")
 d<-psid
 psid20 <- filter(psid, person <= 20)
 ggplot(psid20, aes(x=year, y=income))+geom_line()+facet_wrap(~ person)
+=======
+#####add a predictor#####
+
+###modello####
+
+##  h~Normal(mu, sigma)
+##  mu=alpha+beta*w
+
+#prior: 
+#   alpha~Normal(156,100)
+#   beta~Normal(0,10)
+#   sigma~Uniform(0, 50)
+
+
+
+fit2<-map(alist(
+  height~dnorm(mu, sigma),
+  mu<-a+b*weight,
+  a~dnorm(156,100),
+  b~dnorm(0,10),
+  sigma~dunif(0,50)), data=d2)
+
+# # ###simulazione delle altezze utilizzando le prior del modello####
+# # 
+# samplealpha<-rnorm(352, 156, 100)
+# samplebeta<-rnorm(352, 0, 10)
+# # weight<-rnorm(1e4, 44.99,6.45) <-<-<-<-<- questa è sbagliata!!!!
+# weight<-d2$weight
+# samplemu<-samplealpha+samplebeta*weight
+# samplesigma<-dunif(352,0,50)
+#  
+#  priorh<-rnorm(352, samplemu,samplesigma)
+#  dens(priorh)
+
+precis(fit2, corr = TRUE)
+
+plot(height~weight, data=d2)
+abline(a=coef(fit2)["a"], b=coef(fit2)["b"], col="blue") 
+abline(a=115.0808,b=0.8698418, col="red")
+abline(a=116.0808,b=0.9098418, col="red")
+
+post<-extract.samples(fit2)
+
+mu50<-post$a+post$b*50 # esempio di calcolo di mu per individui di 50 kg cogliendo l'incertezza di a e beta###
+dens(mu50, col=rangi2,xlab="mu|weigth=50")
+
+
+mu<-link(fit2)
+
+####generare 
+>>>>>>> origin/master
