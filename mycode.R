@@ -45,55 +45,60 @@ plot_grid((dt %>%
 #################BAYES#########################
 ###############################################
 
+muContr<-rnorm(1e4, 1000, 50)
+muTreat<-rnorm(1e4, 1000,50)+rnorm(1e4, 0, 10)
+precis(data.frame(muContr, muTreat))
+
+###variable dummy###
+
+dt$Treatment<-ifelse(dt$group=="Treatment", 1,2)
+
+
+library(rethinking)
+
+m<-quap(
+  alist(
+    y~dnorm(mu, sigma), #likelihood
+    mu<-a[Treatment], 
+   #prior
+    a[Treatment]~dnorm(1000,50),
+    sigma~dexp(1)
+  ), data=dt
+)
+
+post<-extract.samples(m)
+post$effectT<-post$a[,1]-post$a[,2]
+precis(post, depth = 2)
+
+
+
+
+
+dt$group_id<-as.integer(dt$group)
+
+m1<-quap(
+  alist(
+    y~dnorm(mu, sigma), #likelihood
+    mu<-a[group_id], 
+    #prior
+    a[group_id]~dnorm(1000,50),
+    sigma~dexp(1)
+  ), data=dt
+)
 
 
 
 
 
 
-dt<-tibble(group=c(rep("Control", 8), rep("Treatment",8)), 
-    y=c(4.691,9.952,9.602,7.273,7.808,8.882,7.688,5.303,
-        4.443,11.451,8.732,4.174,6.138,7.485,7.057,8.517))
-dt<-dt %>% data.frame()
-
-ggplot(dt, aes(x=group, y=y))+geom_boxplot()
-
-
-library(brms)
-library(tidybayes)
-
-x<-brm(data = dt, family = gaussian,
-   y ~ 1+group,
-    # prior = c(prior(normal(1000, 10), class = Intercept),
-    #           prior(uniform(0, 200), class = sigma)),
-    iter = 31000, warmup = 30000, chains = 4, cores = 4)
-
-posterior_summary(x)
-
-post<-posterior_samples(x)
-
-
-
-m_Treatment<-post %>%
-  transmute(gruppo = b_Intercept + b_groupTreatment) %>% 
-  mean_qi(.width = .95)
 
 
 
 
-nd <- tibble(group = "Treatment")
-
-fitted(x,
-       newdata = nd)
 
 
-newdt <- read_excel("newdt.xlsx")
 
 
-xx<-brm(data = newdt, family = gaussian,
-       y ~ 1+group,
-       prior = c(prior(normal(85, 5), class = Intercept),
-                 prior(normal(30,10),class=b),
-                 prior(cauchy(5, 15), class = sigma)),
-       iter = 31000, warmup = 30000, chains = 4, cores = 4)
+
+
 

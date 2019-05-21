@@ -138,7 +138,7 @@ fit2<-map(alist(
 # # 
 # samplealpha<-rnorm(352, 156, 100)
 # samplebeta<-rnorm(352, 0, 10)
-# # weight<-rnorm(1e4, 44.99,6.45) <-<-<-<-<- questa è sbagliata!!!!
+# # weight<-rnorm(1e4, 44.99,6.45) <-<-<-<-<- questa ? sbagliata!!!!
 # weight<-d2$weight
 # samplemu<-samplealpha+samplebeta*weight
 # samplesigma<-dunif(352,0,50)
@@ -163,3 +163,53 @@ mu<-link(fit2)
 
 ####generare 
 >>>>>>> origin/master
+
+
+###########################
+library(rethinking)
+data(WaffleDivorce)
+d <- WaffleDivorce
+d$A<-scale(d$MedianAgeMarriage)
+d$B<-scale(d$Divorce)
+d$M<-scale(d$Marriage)
+
+m5.3<-quap(
+  alist(
+    D~dnorm(mu, sigma),
+    mu<-a+bM*M+bA*A,
+    a~dnorm(0,0.2),
+    bM~dnorm(0,0.5),
+    bA~dnorm(0,0.5),
+    sigma~dexp(1)
+  ), data=d
+  )
+#################################
+
+data(milk)
+d<-milk
+str(d)
+
+d$K<-scale(d$kcal.per.g)
+d$N<-scale(d$neocortex.perc)
+d$M<-scale(log(d$mass))
+
+dcc<-d[complete.cases(d$K,d$N, d$M),]
+
+m5.5d<-quap(
+  alist(
+    K~dnorm(mu, sigma),
+    mu<-a+bN*N,
+    a~dnorm(0,0.2),
+    bN~dnorm(0,0.5),
+    sigma~dexp(1)
+  ), data=dcc
+)
+
+
+xseq<-seq(from=min(dcc$N)-0.15, to=max(dcc$N), length.out = 30)
+mu<-link(m5.5d, data=list(N=xseq))
+mu_mean<-apply(mu, 2, mean)
+mu_PI<-apply(mu, 2, PI)
+plot(K~N, data=dcc)
+lines(xseq, mu_mean, lwd=2, col="blue")
+shade(mu_PI, xseq)
