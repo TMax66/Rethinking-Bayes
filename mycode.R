@@ -102,3 +102,12 @@ m1<-quap(
 
 
 
+
+################################
+
+curve(dnorm(x, 178, 100), from=100, to=250)
+curve(dunif(x, 0,50), from=-10, to=60)
+samplemu<-rnorm(1e4, 178,100)
+samplesigma<-runif(1e4, 0, 50)
+sampleh<-rnorm(1e4, samplemu, samplesigma)
+dens(sampleh)
