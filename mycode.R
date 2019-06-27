@@ -7,7 +7,7 @@ library(broom)
 library(gridExtra)
 library(cowplot)
 
-dt<-tibble(group=c(rep("Control", 5), rep("Treatment",5)), y=c(721,882.88,890.98,840.91,935.69,1060.71,1009.84,1208.20,1209.05,1350.41)/10)
+dt<-tibble(group=c(rep("Control", 5), rep("Treatment",5)), y=c(721,882.88,890.98,840.91,935.69,1060.71,1009.84,1208.20,1209.05,1350.41))
 dt<-dt %>% data.frame()
 
 z<-dt %>% 
@@ -45,69 +45,10 @@ plot_grid((dt %>%
 #################BAYES#########################
 ###############################################
 
-muContr<-rnorm(1e4, 1000, 50)
-muTreat<-rnorm(1e4, 1000,50)+rnorm(1e4, 0, 10)
-precis(data.frame(muContr, muTreat))
+library(brms)
 
-###variable dummy###
-
-dt$Treatment<-ifelse(dt$group=="Treatment", 1,2)
-
-
-library(rethinking)
-
-m<-quap(
-  alist(
-    y~dnorm(mu, sigma), #likelihood
-    mu<-a[Treatment], 
-   #prior
-    a[Treatment]~dnorm(1000,50),
-    sigma~dexp(1)
-  ), data=dt
-)
-
-post<-extract.samples(m)
-post$effectT<-post$a[,1]-post$a[,2]
-precis(post, depth = 2)
-
-
-
-
-
-dt$group_id<-as.integer(dt$group)
-
-m1<-quap(
-  alist(
-    y~dnorm(mu, sigma), #likelihood
-    mu<-a[group_id], 
-    #prior
-    a[group_id]~dnorm(1000,50),
-    sigma~dexp(1)
-  ), data=dt
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-################################
-
-curve(dnorm(x, 178, 100), from=100, to=250)
-curve(dunif(x, 0,50), from=-10, to=60)
-samplemu<-rnorm(1e4, 178,100)
-samplesigma<-runif(1e4, 0, 50)
-sampleh<-rnorm(1e4, samplemu, samplesigma)
-dens(sampleh)
+brm(data = dt, family = gaussian,
+  y ~ group,
+    
+    iter = 2000, warmup = 500, chains = 4, cores = 4,
+    seed = 5)
