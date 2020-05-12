@@ -1,0 +1,45 @@
+---
+title: "Appunti McElreath book "
+output: html_notebook
+---
+```{r}
+setwd("C:/Users/massi/OneDrive/Desktop/Rethinking-Bayes")
+source("pacchetti.r")
+```
+
+
+
+
+### FUNZIONI
+
+sample()<-campiona distribuzioni 
+
+dens() <- serve a plottare le distribuzioni a posteriori dopo che sono state campionate con sample 
+
+PI()<-calcola l'intervallo in cui ricade una determinata % di valori della distribuzione a posteriori
+
+HPDI()<- calcola l'intervallo che cattura i valori del parametro con la più alta probabilità a posteriori
+
+chainmode()<- calcola la moda della distribuzione a posteriori sampled ( la massima stima a posteriori)
+
+simplehist() <- serve a plottare un istogramma della distruibuzioni dei campioni simulati (posterior predictive distribution)
+
+
+precis()<-restituisce i risultati di un modello fittato con la funzione map() o map2stan()
+
+vcov()<-restituisce la matrice di varianza-covarianza tra i parametri stimati con un modello map()
+
+extract.samples()<-campiona la distribuzione a posteriori ottenuta con map()
+
+
+link() <- questa funzione campiona dalla distribuzione a post e poi calcola mu come funzione lineare di a beta e tutti i valori di X in caso di modello tipo: mu=a+b*X !!!
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
