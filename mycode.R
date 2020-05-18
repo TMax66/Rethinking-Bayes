@@ -45,10 +45,6 @@ plot_grid((dt %>%
 #################BAYES#########################
 ###############################################
 
-library(brms)
+library(rethinking)
 
-brm(data = dt, family = gaussian,
-  y ~ group,
-    
-    iter = 2000, warmup = 500, chains = 4, cores = 4,
-    seed = 5)
+
